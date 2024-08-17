@@ -163,14 +163,10 @@ function dnd() {
 function sms() {
     state = "sms";
     console.log("sms");
-    tvService.setCharacteristic(Characteristic.Active, true);
-    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
 }
 function fts() {
     state = "fts";
     console.log("fts");
-    tvService.setCharacteristic(Characteristic.Active, true);
-    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
 }
 function busy() {
     state = "dnd";
@@ -179,7 +175,6 @@ function busy() {
 function free() {
     state = "free";
     console.log("free");
-    tvService.setCharacteristic(Characteristic.Active, false);
 }
 //#endregion
 
@@ -188,25 +183,38 @@ function free() {
 const app = express();
 const port = 34614;
 
+app.use(express.json());
+
 app.get("/status", (req, res) => {
+    console.log("GET /status called");
     res.send(state);
 });
 
 app.post("/status", (req, res) => {
-    const newState = req.query.state || req.body || "dnd";
+    console.log("POST /status called with body:", req.body, "and query:", req.query);
+    const newState = req.query.state || req.body.state || "dnd";
     state = newState;
-    if (newState == "dnd") {
-        tvService.setCharacteristic(Characteristic.Active, true);
-        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-    } else if (newState == "sms") {
-        tvService.setCharacteristic(Characteristic.Active, true);
-        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-    } else if (newState == "fts") {
-        tvService.setCharacteristic(Characteristic.Active, true);
-        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-    } else if (newState == "free") {
-        tvService.setCharacteristic(Characteristic.Active, false);
+    console.log("New state set to:", newState);
+
+    try {
+        if (newState == "dnd") {
+            tvService.setCharacteristic(Characteristic.Active, true);
+            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+        } else if (newState == "sms") {
+            tvService.setCharacteristic(Characteristic.Active, true);
+            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+        } else if (newState == "fts") {
+            tvService.setCharacteristic(Characteristic.Active, true);
+            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+        } else if (newState == "free") {
+            tvService.setCharacteristic(Characteristic.Active, false);
+        }
+    } catch (error) {
+        console.error("Error setting characteristics:", error);
+        res.status(500).send("Internal Server Error");
+        return;
     }
+
     res.send(`State updated to: ${newState}`);
 });
 
