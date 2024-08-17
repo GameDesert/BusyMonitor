@@ -163,18 +163,23 @@ function dnd() {
 function sms() {
     state = "sms";
     console.log("sms");
+    tvService.setCharacteristic(Characteristic.Active, true);
+    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
 }
 function fts() {
     state = "fts";
     console.log("fts");
+    tvService.setCharacteristic(Characteristic.Active, true);
+    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
 }
 function busy() {
-    state = "busy";
-    console.log("busy");
+    state = "dnd";
+    console.log("busy - dnd");
 }
 function free() {
     state = "free";
     console.log("free");
+    tvService.setCharacteristic(Characteristic.Active, false);
 }
 //#endregion
 
@@ -185,6 +190,24 @@ const port = 34614;
 
 app.get("/status", (req, res) => {
     res.send(state);
+});
+
+app.post("/status", (req, res) => {
+    const newState = req.query.state || req.body || "dnd";
+    state = newState;
+    if (newState == "dnd") {
+        tvService.setCharacteristic(Characteristic.Active, true);
+        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+    } else if (newState == "sms") {
+        tvService.setCharacteristic(Characteristic.Active, true);
+        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+    } else if (newState == "fts") {
+        tvService.setCharacteristic(Characteristic.Active, true);
+        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+    } else if (newState == "free") {
+        tvService.setCharacteristic(Characteristic.Active, false);
+    }
+    res.send(`State updated to: ${newState}`);
 });
 
 app.listen(port, () => {
