@@ -5,18 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Status Monitor</title>
     <style>
-        div.options_container {
+        body {
             background-image: url("https://images.unsplash.com/photo-1688231176970-51525d39fe18?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
             background-size: contain;
+        }
+
+        div.options_container {
             width: 300px;
             display: block;
             margin-left: auto;
             margin-right: auto;
             border-radius: 16px;
             padding: 16px;
+
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(17, 25, 40, 0.25);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
-        div.options_container > div {
+        div.options_container > label > div {
             padding: 8px;
             display: block;
             margin-left: auto;
@@ -24,64 +33,113 @@
 
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            background-color: rgba(17, 25, 40, 0.75);
+            background-color: rgba(17, 25, 40, 0.25);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.125);
 
             margin: 8px;
         }
 
-        div.options_container > div > span {
-            border-right: 2px solid salmon;
+        div.options_container > label > div > span {
+            border-right: none;
             height: 32px !important;
         }
 
-        div.options_container > div > span > input {
+        div.options_container > input {
             display: none;
         }
 
-        div.options_container > div > label {
-            font-weight: bold;
+        div.options_container > label > div > p {
+            transform: translateY(-5px);
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+            color: #d4d4d4;
         }
 
-        div.options_container > div > span > label > svg {
+        div.options_container > label > div > span > svg {
             width: 24px;
             padding-right: 16px;
+            transform: translate3d(6px, 2px, 0px);
+            fill: #d4d4d4;
         }
 
-        div.options_container > div.selected {
-            background-color: blue;
-            border-radius: 24px;
+        div.options_container > input[type="radio"]:checked#dnd + label > div {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(201, 20, 44, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
-        div.options_container > div.selected:hover {
-            background-color: blue;
-            border-radius: 24px;
+
+
+        div.options_container > input[type="radio"]:checked#sms + label > div {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(197, 131, 24, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
-        div.options_container > div:hover {
+
+
+        div.options_container > input[type="radio"]:checked#fts + label > div {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(103, 165, 33, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+
+
+
+        div.options_container > input[type="radio"]:checked#free + label > div {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(153, 153, 153, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+
+
+
+        div.options_container > label > div:hover {
             background-color: rgb(151, 151, 255);
             border-radius: 24px;
         }
     </style>
 </head>
-    <div class="options_container">
-        <div class="unselected">
-            <span><input type="radio" id="dnd" name="status" value="Do Not Disturb"><label for="dnd"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Do Not Disturb</title><path d="M6.5 11C9 11 11 9 11 6.5C11 4 9 2 6.5 2C4 2 2 4 2 6.5C2 9 4 11 6.5 11M3.92 5L8 9.09C7.58 9.35 7.06 9.5 6.5 9.5C4.84 9.5 3.5 8.16 3.5 6.5C3.5 5.94 3.65 5.42 3.92 5M9.5 6.5C9.5 7.06 9.35 7.58 9.09 8L5 3.92C5.42 3.65 5.94 3.5 6.5 3.5C8.16 3.5 9.5 4.84 9.5 6.5M10 12C10.81 11.46 11.5 10.77 12 9.97V19H19V5H12.83C12.66 4.28 12.37 3.61 12 3H19C20.11 3 21 3.89 21 5V19H22V21H2V19H10V12M16 11H18V13H16V11Z" /></svg></label></span>
-            <label for="dnd">Do Not Disturb</label><br>
-        </div>
+<body>
+    <div class="content">
+        <div class="options_container">
+            <input type="radio" id="dnd" name="status" value="Do Not Disturb">
+            <label for="dnd">
+                <div>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Do Not Disturb</title><path d="M6.5 11C9 11 11 9 11 6.5C11 4 9 2 6.5 2C4 2 2 4 2 6.5C2 9 4 11 6.5 11M3.92 5L8 9.09C7.58 9.35 7.06 9.5 6.5 9.5C4.84 9.5 3.5 8.16 3.5 6.5C3.5 5.94 3.65 5.42 3.92 5M9.5 6.5C9.5 7.06 9.35 7.58 9.09 8L5 3.92C5.42 3.65 5.94 3.5 6.5 3.5C8.16 3.5 9.5 4.84 9.5 6.5M10 12C10.81 11.46 11.5 10.77 12 9.97V19H19V5H12.83C12.66 4.28 12.37 3.61 12 3H19C20.11 3 21 3.89 21 5V19H22V21H2V19H10V12M16 11H18V13H16V11Z" /></svg></span>
+                    <p>Do Not Disturb</p><br>
+                </div>
+            </label>
 
-        <div class="unselected">
-            <span><input type="radio" id="sms" name="status" value="Reading Texts"><label for="sms"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Reading Texts</title><path d="M11,17V7H4V17H11M11,3A2,2 0 0,1 13,5V19A2,2 0 0,1 11,21H4C2.89,21 2,20.1 2,19V5A2,2 0 0,1 4,3H11M16.5,3H21.5A1.5,1.5 0 0,1 23,4.5V7.5A1.5,1.5 0 0,1 21.5,9H18L15,12V9L15,4.5A1.5,1.5 0 0,1 16.5,3Z" /></svg></label></span>
-            <label for="sms">Reading Texts</label><br>
-        </div>
-        <div class="unselected">
-            <span><input type="radio" id="fts" name="status" value="Free To Speak"><label for="fts"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Free To Speak</title><path d="M9,5A4,4 0 0,1 13,9A4,4 0 0,1 9,13A4,4 0 0,1 5,9A4,4 0 0,1 9,5M9,15C11.67,15 17,16.34 17,19V21H1V19C1,16.34 6.33,15 9,15M16.76,5.36C18.78,7.56 18.78,10.61 16.76,12.63L15.08,10.94C15.92,9.76 15.92,8.23 15.08,7.05L16.76,5.36M20.07,2C24,6.05 23.97,12.11 20.07,16L18.44,14.37C21.21,11.19 21.21,6.65 18.44,3.63L20.07,2Z" /></svg></label></span>
-            <label for="fts">Free To Speak</label><br>
-        </div>
-        <div class="unselected">
-            <span><input type="radio" id="free" name="status" value="Free"><label for="free"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Free</title><path d="M12,3C10.89,3 10,3.89 10,5H3V19H2V21H22V19H21V5C21,3.89 20.11,3 19,3H12M12,5H19V19H12V5M5,11H7V13H5V11Z" /></svg></label></span>
-            <label for="free">Free</label>
+            <input type="radio" id="sms" name="status" value="Reading Texts">
+            <label for="sms">
+                <div>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Reading Texts</title><path d="M11,17V7H4V17H11M11,3A2,2 0 0,1 13,5V19A2,2 0 0,1 11,21H4C2.89,21 2,20.1 2,19V5A2,2 0 0,1 4,3H11M16.5,3H21.5A1.5,1.5 0 0,1 23,4.5V7.5A1.5,1.5 0 0,1 21.5,9H18L15,12V9L15,4.5A1.5,1.5 0 0,1 16.5,3Z" /></svg></span>
+                    <p>Reading Texts</p><br>
+                </div>
+            </label>
+
+            <input type="radio" id="fts" name="status" value="Free To Speak">
+            <label for="fts">
+                <div>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Free To Speak</title><path d="M9,5A4,4 0 0,1 13,9A4,4 0 0,1 9,13A4,4 0 0,1 5,9A4,4 0 0,1 9,5M9,15C11.67,15 17,16.34 17,19V21H1V19C1,16.34 6.33,15 9,15M16.76,5.36C18.78,7.56 18.78,10.61 16.76,12.63L15.08,10.94C15.92,9.76 15.92,8.23 15.08,7.05L16.76,5.36M20.07,2C24,6.05 23.97,12.11 20.07,16L18.44,14.37C21.21,11.19 21.21,6.65 18.44,3.63L20.07,2Z" /></svg></span>
+                    <p>Free To Speak</p><br>
+                </div>
+            </label>
+
+            <input type="radio" id="free" name="status" value="Free">
+            <label for="free">
+                <div>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Free</title><path d="M12,3C10.89,3 10,3.89 10,5H3V19H2V21H22V19H21V5C21,3.89 20.11,3 19,3H12M12,5H19V19H12V5M5,11H7V13H5V11Z" /></svg></span>
+                    <p>Free</p>
+                </div>
+            </label>
         </div>
     </div>
     <script>
@@ -89,8 +147,6 @@
         radioButtons.forEach(radioButton => {
             radioButton.addEventListener('change', () => {
                 alert(radioButton.id);
-                radioButtons.forEach(radioButton => { radioButton.parentNode.parentNode.className = "unselected" });
-                radioButton.parentNode.parentNode.className = "selected";
             });
         });
     </script>
