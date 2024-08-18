@@ -19,6 +19,7 @@
   "homepage": "https://github.com/GameDesert/BusyMonitor#readme",
   "dependencies": {
     "express": "^4.19.2",
-    "hap-nodejs": "^1.1.0"
+    "hap-nodejs": "^1.1.0",
+    "ws": "^8.18.0"
   }
 }

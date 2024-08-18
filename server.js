@@ -1,5 +1,6 @@
 const hap = require("hap-nodejs");
 const express = require("express");
+const ws = require('ws');
 
 // #region Homekit Integration
 const Accessory = hap.Accessory;
@@ -107,7 +108,7 @@ tvService
         callback(null);
     });
 
-// Handle input changes
+
 tvService
     .getCharacteristic(Characteristic.ActiveIdentifier)
     .on("set", (value, callback) => {
@@ -159,22 +160,27 @@ let state = "free"; // Or "dnd", "sms", "fts", or "busy" (please don't use busy 
 function dnd() {
     state = "dnd";
     console.log("dnd");
+    ws_send_message({status: "dnd"});
 }
 function sms() {
     state = "sms";
     console.log("sms");
+    ws_send_message({status: "sms"});
 }
 function fts() {
     state = "fts";
     console.log("fts");
+    ws_send_message({status: "fts"});
 }
 function busy() {
     state = "dnd";
     console.log("busy - dnd");
+    ws_send_message({status: "dnd"});
 }
 function free() {
     state = "free";
     console.log("free");
+    ws_send_message({status: "free"});
 }
 //#endregion
 
@@ -200,14 +206,18 @@ app.post("/status/api", (req, res) => {
         if (newState == "dnd") {
             tvService.setCharacteristic(Characteristic.Active, true);
             tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+            ws_send_message({status: "dnd"});
         } else if (newState == "sms") {
             tvService.setCharacteristic(Characteristic.Active, true);
             tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+            ws_send_message({status: "sms"});
         } else if (newState == "fts") {
             tvService.setCharacteristic(Characteristic.Active, true);
             tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+            ws_send_message({status: "fts"});
         } else if (newState == "free") {
             tvService.setCharacteristic(Characteristic.Active, false);
+            ws_send_message({status: "free"});
         }
     } catch (error) {
         console.error("Error setting characteristics:", error);
@@ -225,5 +235,50 @@ app.listen(port, () => {
 });
 
 
+
+// #endregion
+// #region Web GUI Websockets
+
+function ws_set_status(status) {
+    if (status == "dnd") {
+        state = "dnd"
+        tvService.setCharacteristic(Characteristic.Active, true);
+        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+        ws_send_message({status: "dnd"});
+    } else if (status == "sms") {
+        state = "sms"
+        tvService.setCharacteristic(Characteristic.Active, true);
+        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+        ws_send_message({status: "sms"});
+    } else if (status == "fts") {
+        state = "fts"
+        tvService.setCharacteristic(Characteristic.Active, true);
+        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+        ws_send_message({status: "fts"});
+    } else if (status == "free") {
+        state = "free"
+        tvService.setCharacteristic(Characteristic.Active, false);
+        ws_send_message({status: "free"});
+    }
+}
+
+const wsServer = new ws.Server({ noServer: true });
+wsServer.on('connection', socket => {
+  socket.on('message', message => ws_set_status(JSON.parse(message)["status"]));
+});
+
+
+const server = app.listen(port+1);
+server.on('upgrade', (request, socket, head) => {
+  wsServer.handleUpgrade(request, socket, head, socket => {
+    wsServer.emit('connection', socket, request);
+  });
+});
+
+function ws_send_message(message) {
+    wsServer.clients.forEach(client => {
+        client.send(JSON.stringify(message));
+    });
+}
 
 // #endregion

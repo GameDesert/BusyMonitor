@@ -9,7 +9,7 @@
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             
 
-	        transition: 1s cubic-bezier(0.76, 0, 0.24, 1);
+	        transition: 0.75s cubic-bezier(0.76, 0, 0.24, 1);
 
             margin: 0;
             background-color:hsla(30,92%,91%,1);
@@ -158,10 +158,41 @@
 
             cursor: pointer;
         }
+
+        /* div.connection {
+            background-color: rgb(142, 216, 30);
+            border-radius: 0 0 24px 24px;
+            padding: 12px;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+            min-width: 48px;
+            transition: 1s;
+        }
+
+        div.connection > svg  {
+            width: 32px;
+            fill: #fff;
+        }
+
+        div.text {
+            padding-left: 8px;
+            padding-right: 8px;
+            font-weight: 600;
+            color: #fff;
+            display: block;
+        } */
     </style>
 </head>
 <body class="free">
     <div class="content">
+        <!-- <div class="connection">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Connected to Server</title><path d="M12,21L15.6,16.2C14.6,15.45 13.35,15 12,15C10.65,15 9.4,15.45 8.4,16.2L12,21M12,3C7.95,3 4.21,4.34 1.2,6.6L3,9C5.5,7.12 8.62,6 12,6C15.38,6 18.5,7.12 21,9L22.8,6.6C19.79,4.34 16.05,3 12,3M12,9C9.3,9 6.81,9.89 4.8,11.4L6.6,13.8C8.1,12.67 9.97,12 12,12C14.03,12 15.9,12.67 17.4,13.8L19.2,11.4C17.19,9.89 14.7,9 12,9Z" /></svg>
+            <div class="text">Connected to Server</div>
+        </div> -->
         <div class="options_container">
             <input type="radio" id="dnd" name="status" value="Do Not Disturb">
             <label for="dnd">
@@ -197,11 +228,57 @@
         </div>
     </div>
     <script>
+        const ws = new WebSocket('ws://localhost:34615'); // Replace with your WebSocket server URL
+
+        ws.onopen = () => {
+            console.log('WebSocket connection established');
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Message from server:', JSON.parse(event.data)["status"]);
+            if (JSON.parse(event.data)["status"] == "dnd") {
+                document.getElementById('dnd').click();
+            } else if (JSON.parse(event.data)["status"] == "sms") {
+                document.getElementById('sms').click();
+            } else if (JSON.parse(event.data)["status"] == "fts") {
+                document.getElementById('fts').click();
+            } else if (JSON.parse(event.data)["status"] == "free") {
+                document.getElementById('free').click();
+            }
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
         const radioButtons = document.querySelectorAll('input[type="radio"]');
         radioButtons.forEach(radioButton => {
             radioButton.addEventListener('change', () => {
                 // alert(radioButton.id);
                 document.body.className = document.querySelector('input[type="radio"]:checked').id;
+                
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ status: document.querySelector('input[type="radio"]:checked').id }));
+                }
+            });
+        });
+
+
+
+    
+        
+
+        radioButtons.forEach(radioButton => {
+            radioButton.addEventListener('change', () => {
+                const selectedStatus = document.querySelector('input[type="radio"]:checked').id;
+                document.body.className = selectedStatus;
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ status: selectedStatus }));
+                }
             });
         });
     </script>
