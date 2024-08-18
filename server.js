@@ -3,6 +3,8 @@ const express = require("express");
 const ws = require('ws');
 const http = require('http');
 
+const password = "_replace_in_prod_"
+
 // #region Homekit Integration
 const Accessory = hap.Accessory;
 const Service = hap.Service;
@@ -201,7 +203,7 @@ app.post("/status/api", (req, res) => {
     console.log("POST /status/api called with body:", req.body, "and query:", req.query);
     const newState = req.query.state || req.body.state || "dnd";
     const identifier = req.query.id || req.body.id || "";
-    if (identifier == "_replace_in_prod_") {
+    if (identifier == password) {
         state = newState;
         console.log("New state set to:", newState);
 
@@ -244,25 +246,30 @@ app.use(express.static("static"));
 // #region Web GUI Websockets
 
 function ws_set_status(status) {
-    if (status == "dnd") {
-        state = "dnd"
-        tvService.setCharacteristic(Characteristic.Active, true);
-        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-        ws_send_message({ status: "dnd" });
-    } else if (status == "sms") {
-        state = "sms"
-        tvService.setCharacteristic(Characteristic.Active, true);
-        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-        ws_send_message({ status: "sms" });
-    } else if (status == "fts") {
-        state = "fts"
-        tvService.setCharacteristic(Characteristic.Active, true);
-        tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-        ws_send_message({ status: "fts" });
-    } else if (status == "free") {
-        state = "free"
-        tvService.setCharacteristic(Characteristic.Active, false);
-        ws_send_message({ status: "free" });
+    console.log(status["id"])
+    if (status["id"] === password) {
+        if (status["status"] == "dnd") {
+            state = "dnd"
+            tvService.setCharacteristic(Characteristic.Active, true);
+            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+            ws_send_message({ status: "dnd" });
+        } else if (status["status"] == "sms") {
+            state = "sms"
+            tvService.setCharacteristic(Characteristic.Active, true);
+            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+            ws_send_message({ status: "sms" });
+        } else if (status["status"] == "fts") {
+            state = "fts"
+            tvService.setCharacteristic(Characteristic.Active, true);
+            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+            ws_send_message({ status: "fts" });
+        } else if (status["status"] == "free") {
+            state = "free"
+            tvService.setCharacteristic(Characteristic.Active, false);
+            ws_send_message({ status: "free" });
+        }
+    } else {
+        console.log("REJECTED WS")
     }
 }
 
@@ -271,7 +278,7 @@ const server = http.createServer(app);
 const wsServer = new ws.Server({ noServer: true });
 
 wsServer.on('connection', socket => {
-    socket.on('message', message => ws_set_status(JSON.parse(message)["status"]));
+    socket.on('message', message => ws_set_status(JSON.parse(message)));
 });
 
 server.on('upgrade', (request, socket, head) => {

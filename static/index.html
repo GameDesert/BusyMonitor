@@ -288,23 +288,15 @@
         };
 
         const radioButtons = document.querySelectorAll('input[type="radio"]');
-        radioButtons.forEach(radioButton => {
-            radioButton.addEventListener('change', () => {
-                // alert(radioButton.id);
-                document.body.className = document.querySelector('input[type="radio"]:checked').id;
-                
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ status: document.querySelector('input[type="radio"]:checked').id }));
-                }
-            });
-        });
+
 
         radioButtons.forEach(radioButton => {
             radioButton.addEventListener('change', () => {
                 const selectedStatus = document.querySelector('input[type="radio"]:checked').id;
                 document.body.className = selectedStatus;
+
                 if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ status: selectedStatus }));
+                    ws.send(JSON.stringify({ status: selectedStatus,  id: "_replace_in_prod_"  }));
                 }
             });
         });
