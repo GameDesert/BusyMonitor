@@ -1,6 +1,7 @@
 const hap = require("hap-nodejs");
 const express = require("express");
 const ws = require('ws');
+const http = require('http');
 
 // #region Homekit Integration
 const Accessory = hap.Accessory;
@@ -160,27 +161,27 @@ let state = "free"; // Or "dnd", "sms", "fts", or "busy" (please don't use busy 
 function dnd() {
     state = "dnd";
     console.log("dnd");
-    ws_send_message({status: "dnd"});
+    ws_send_message({ status: "dnd" });
 }
 function sms() {
     state = "sms";
     console.log("sms");
-    ws_send_message({status: "sms"});
+    ws_send_message({ status: "sms" });
 }
 function fts() {
     state = "fts";
     console.log("fts");
-    ws_send_message({status: "fts"});
+    ws_send_message({ status: "fts" });
 }
 function busy() {
     state = "dnd";
     console.log("busy - dnd");
-    ws_send_message({status: "dnd"});
+    ws_send_message({ status: "dnd" });
 }
 function free() {
     state = "free";
     console.log("free");
-    ws_send_message({status: "free"});
+    ws_send_message({ status: "free" });
 }
 //#endregion
 
@@ -206,18 +207,18 @@ app.post("/status/api", (req, res) => {
         if (newState == "dnd") {
             tvService.setCharacteristic(Characteristic.Active, true);
             tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-            ws_send_message({status: "dnd"});
+            ws_send_message({ status: "dnd" });
         } else if (newState == "sms") {
             tvService.setCharacteristic(Characteristic.Active, true);
             tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-            ws_send_message({status: "sms"});
+            ws_send_message({ status: "sms" });
         } else if (newState == "fts") {
             tvService.setCharacteristic(Characteristic.Active, true);
             tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-            ws_send_message({status: "fts"});
+            ws_send_message({ status: "fts" });
         } else if (newState == "free") {
             tvService.setCharacteristic(Characteristic.Active, false);
-            ws_send_message({status: "free"});
+            ws_send_message({ status: "free" });
         }
     } catch (error) {
         console.error("Error setting characteristics:", error);
@@ -230,9 +231,7 @@ app.post("/status/api", (req, res) => {
 
 app.use(express.static("static"));
 
-app.listen(port, () => {
-    console.log(`Running on http://localhost:${port}`);
-});
+
 
 
 
@@ -244,35 +243,40 @@ function ws_set_status(status) {
         state = "dnd"
         tvService.setCharacteristic(Characteristic.Active, true);
         tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-        ws_send_message({status: "dnd"});
+        ws_send_message({ status: "dnd" });
     } else if (status == "sms") {
         state = "sms"
         tvService.setCharacteristic(Characteristic.Active, true);
         tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-        ws_send_message({status: "sms"});
+        ws_send_message({ status: "sms" });
     } else if (status == "fts") {
         state = "fts"
         tvService.setCharacteristic(Characteristic.Active, true);
         tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-        ws_send_message({status: "fts"});
+        ws_send_message({ status: "fts" });
     } else if (status == "free") {
         state = "free"
         tvService.setCharacteristic(Characteristic.Active, false);
-        ws_send_message({status: "free"});
+        ws_send_message({ status: "free" });
     }
 }
 
+const server = http.createServer(app);
+
 const wsServer = new ws.Server({ noServer: true });
+
 wsServer.on('connection', socket => {
-  socket.on('message', message => ws_set_status(JSON.parse(message)["status"]));
+    socket.on('message', message => ws_set_status(JSON.parse(message)["status"]));
 });
 
-
-const server = app.listen(port);
 server.on('upgrade', (request, socket, head) => {
-  wsServer.handleUpgrade(request, socket, head, socket => {
-    wsServer.emit('connection', socket, request);
-  });
+    if (request.url === '/ws') {
+        wsServer.handleUpgrade(request, socket, head, (ws) => {
+            wsServer.emit('connection', ws, request);
+        });
+    } else {
+        socket.destroy();
+    }
 });
 
 function ws_send_message(message) {
@@ -280,5 +284,10 @@ function ws_send_message(message) {
         client.send(JSON.stringify(message));
     });
 }
+
+
+server.listen(port, () => {
+    console.log(`Running on http://localhost:${port}`);
+});
 
 // #endregion
