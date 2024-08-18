@@ -136,13 +136,21 @@ function getInputName(identifier) {
 }
 
 function change(inputName) {
-    if (inputName == "Do Not Disturb") {
-        dnd();
-    } else if (inputName == "Reading Texts") {
-        sms();
-    } else if (inputName == "Free To Speak") {
-        fts();
-    } else {
+
+    switch (inputName) {
+        case "Do Not Disturb":
+            dnd();
+            break;
+        case "Reading Texts":
+            sms();
+            break;
+        case "Free To Speak":
+            fts();
+            break;
+
+        default:
+            console.log("Improper Input Name: ", inputName)
+            break;
     }
 }
 
@@ -208,21 +216,29 @@ app.post("/status/api", (req, res) => {
         console.log("New state set to:", newState);
 
         try {
-            if (newState == "dnd") {
-                tvService.setCharacteristic(Characteristic.Active, true);
-                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-                ws_send_message({ status: "dnd" });
-            } else if (newState == "sms") {
-                tvService.setCharacteristic(Characteristic.Active, true);
-                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-                ws_send_message({ status: "sms" });
-            } else if (newState == "fts") {
-                tvService.setCharacteristic(Characteristic.Active, true);
-                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-                ws_send_message({ status: "fts" });
-            } else if (newState == "free") {
-                tvService.setCharacteristic(Characteristic.Active, false);
-                ws_send_message({ status: "free" });
+            switch (newState) {
+                case "dnd":
+                    tvService.setCharacteristic(Characteristic.Active, true);
+                    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+                    ws_send_message({ status: "dnd" });
+                    break;
+                case "sms":
+                    tvService.setCharacteristic(Characteristic.Active, true);
+                    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+                    ws_send_message({ status: "sms" });
+                    break;
+                case "fts":
+                    tvService.setCharacteristic(Characteristic.Active, true);
+                    tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+                    ws_send_message({ status: "fts" });
+                    break;
+                case "free":
+                    tvService.setCharacteristic(Characteristic.Active, false);
+                    ws_send_message({ status: "free" });
+                    break;
+                default:
+                    console.log("Invalid API State: ", newState)
+                    break;
             }
         } catch (error) {
             console.error("Error setting characteristics:", error);
@@ -246,27 +262,35 @@ app.use(express.static("static"));
 // #region Web GUI Websockets
 
 function ws_set_status(status) {
-    console.log(status["id"])
+    console.log(status["id"]);
     if (status["id"] === password) {
-        if (status["status"] == "dnd") {
-            state = "dnd"
-            tvService.setCharacteristic(Characteristic.Active, true);
-            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-            ws_send_message({ status: "dnd" });
-        } else if (status["status"] == "sms") {
-            state = "sms"
-            tvService.setCharacteristic(Characteristic.Active, true);
-            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-            ws_send_message({ status: "sms" });
-        } else if (status["status"] == "fts") {
-            state = "fts"
-            tvService.setCharacteristic(Characteristic.Active, true);
-            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-            ws_send_message({ status: "fts" });
-        } else if (status["status"] == "free") {
-            state = "free"
-            tvService.setCharacteristic(Characteristic.Active, false);
-            ws_send_message({ status: "free" });
+        switch (status["status"]) {
+            case "dnd":
+                state = "dnd"
+                tvService.setCharacteristic(Characteristic.Active, true);
+                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+                ws_send_message({ status: "dnd" });
+                break;
+            case "sms":
+                state = "sms"
+                tvService.setCharacteristic(Characteristic.Active, true);
+                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+                ws_send_message({ status: "sms" });
+                break;
+            case "fts":
+                state = "fts"
+                tvService.setCharacteristic(Characteristic.Active, true);
+                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+                ws_send_message({ status: "fts" });
+                break;
+            case "free":
+                state = "free"
+                tvService.setCharacteristic(Characteristic.Active, false);
+                ws_send_message({ status: "free" });
+                break;
+            default:
+                console.log("Invalid State: ", status["status"])
+                break;
         }
     } else {
         console.log("REJECTED WS")
