@@ -135,3 +135,4 @@ persist/
 # Electron Executable Because It's Too Big
 BusyMonitor-win32-x64/
 *.exe
+BusyMonitor-win32-x64.zip
