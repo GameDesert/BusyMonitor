@@ -24,6 +24,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
     "@electron/packager": "^18.3.3"
   }
 }
