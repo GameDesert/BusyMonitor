@@ -268,7 +268,7 @@ wsServer.on('connection', socket => {
 });
 
 
-const server = app.listen(port+1);
+const server = app.listen(port);
 server.on('upgrade', (request, socket, head) => {
   wsServer.handleUpgrade(request, socket, head, socket => {
     wsServer.emit('connection', socket, request);
