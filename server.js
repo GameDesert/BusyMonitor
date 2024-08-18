@@ -200,33 +200,38 @@ app.get("/status/api", (req, res) => {
 app.post("/status/api", (req, res) => {
     console.log("POST /status/api called with body:", req.body, "and query:", req.query);
     const newState = req.query.state || req.body.state || "dnd";
-    state = newState;
-    console.log("New state set to:", newState);
+    const identifier = req.query.id || req.body.id || "";
+    if (identifier == "_replace_in_prod_") {
+        state = newState;
+        console.log("New state set to:", newState);
 
-    try {
-        if (newState == "dnd") {
-            tvService.setCharacteristic(Characteristic.Active, true);
-            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
-            ws_send_message({ status: "dnd" });
-        } else if (newState == "sms") {
-            tvService.setCharacteristic(Characteristic.Active, true);
-            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
-            ws_send_message({ status: "sms" });
-        } else if (newState == "fts") {
-            tvService.setCharacteristic(Characteristic.Active, true);
-            tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
-            ws_send_message({ status: "fts" });
-        } else if (newState == "free") {
-            tvService.setCharacteristic(Characteristic.Active, false);
-            ws_send_message({ status: "free" });
+        try {
+            if (newState == "dnd") {
+                tvService.setCharacteristic(Characteristic.Active, true);
+                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 1);
+                ws_send_message({ status: "dnd" });
+            } else if (newState == "sms") {
+                tvService.setCharacteristic(Characteristic.Active, true);
+                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 2);
+                ws_send_message({ status: "sms" });
+            } else if (newState == "fts") {
+                tvService.setCharacteristic(Characteristic.Active, true);
+                tvService.setCharacteristic(Characteristic.ActiveIdentifier, 3);
+                ws_send_message({ status: "fts" });
+            } else if (newState == "free") {
+                tvService.setCharacteristic(Characteristic.Active, false);
+                ws_send_message({ status: "free" });
+            }
+        } catch (error) {
+            console.error("Error setting characteristics:", error);
+            res.status(500).send("Internal Server Error");
+            return;
         }
-    } catch (error) {
-        console.error("Error setting characteristics:", error);
-        res.status(500).send("Internal Server Error");
-        return;
-    }
 
-    res.send(`State updated to: ${newState}`);
+        res.send(`State updated to: ${newState}`);
+    } else {
+        res.status(403).send("Forbidden. Send proper id, either as query or as JSON.");
+    }
 });
 
 app.use(express.static("static"));
