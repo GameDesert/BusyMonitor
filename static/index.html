@@ -236,16 +236,16 @@
                 .then(data => {
                     console.log('API response:', data);
                     if (data == "dnd") {
-                        document.getElementById('dnd').click();
+                        document.getElementById('dnd').checked = true;
                         document.body.className = "dnd";
                     } else if (data == "sms") {
-                        document.getElementById('sms').click();
+                        document.getElementById('sms').checked = true;
                         document.body.className = "sms";
                     } else if (data == "fts") {
-                        document.getElementById('fts').click();
+                        document.getElementById('fts').checked = true;
                         document.body.className = "fts";
                     } else if (data == "free") {
-                        document.getElementById('free').click();
+                        document.getElementById('free').checked = true;
                         document.body.className = "free";
                     }
                 })
@@ -261,16 +261,20 @@
         ws.onmessage = (event) => {
             console.log('Message from server:', JSON.parse(event.data)["status"]);
             if (JSON.parse(event.data)["status"] == "dnd") {
-                document.getElementById('dnd').click();
+                document.getElementById('dnd').checked = true;
+                document.body.className = "dnd";
                 
             } else if (JSON.parse(event.data)["status"] == "sms") {
-                document.getElementById('sms').click();
+                document.getElementById('sms').checked = true;
+                document.body.className = "sms";
                 
             } else if (JSON.parse(event.data)["status"] == "fts") {
-                document.getElementById('fts').click();
+                document.getElementById('fts').checked = true;
+                document.body.className = "fts";
                 
             } else if (JSON.parse(event.data)["status"] == "free") {
-                document.getElementById('free').click();
+                document.getElementById('free').checked = true;
+                document.body.className = "free";
                 
             }
         };
