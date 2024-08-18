@@ -8,6 +8,42 @@
         body {
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             
+
+	        transition: 1s cubic-bezier(0.76, 0, 0.24, 1);
+
+            margin: 0;
+            background-color:hsla(30,92%,91%,1);
+            background-image: radial-gradient(at 85% 81%, hsla(31,48%,74%,1) 0px, transparent 50%),
+            radial-gradient(at 22% 31%, hsla(29,94%,89%,1) 0px, transparent 50%), url("data:image/svg+xml,%3Csvg viewBox='0 0 380 380' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.65' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-blend-mode: multiply;
+            
+            width: 100dvw;
+            height: 100dvh;
+        }
+
+        body.dnd {
+            background-color:rgb(255, 159, 159);
+            background-image: radial-gradient(at 85% 81%, rgb(206, 127, 127) 0px, transparent 50%),
+            radial-gradient(at 22% 31%, rgb(255, 169, 169) 0px, transparent 50%), url("data:image/svg+xml,%3Csvg viewBox='0 0 380 380' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.65' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        body.sms {
+            background-color:rgb(255, 210, 159);
+            background-image: radial-gradient(at 85% 81%, rgb(206, 172, 127) 0px, transparent 50%),
+            radial-gradient(at 22% 31%, rgb(255, 211, 169) 0px, transparent 50%), url("data:image/svg+xml,%3Csvg viewBox='0 0 380 380' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.65' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        body.fts {
+            background-color:rgb(175, 255, 159);
+            background-image: radial-gradient(at 85% 81%, rgb(134, 206, 127) 0px, transparent 50%),
+            radial-gradient(at 22% 31%, rgb(176, 255, 169) 0px, transparent 50%), url("data:image/svg+xml,%3Csvg viewBox='0 0 380 380' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.65' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        body.free {
+            background-color:rgb(255, 255, 255);
+            background-image: radial-gradient(at 85% 81%, rgb(175, 175, 175) 0px, transparent 50%),
+            radial-gradient(at 22% 31%, rgb(255, 255, 255) 0px, transparent 50%), url("data:image/svg+xml,%3Csvg viewBox='0 0 380 380' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.65' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         div.content {
@@ -64,14 +100,14 @@
             display: inline-block;
             margin: 0;
             padding: 0;
-            color: #d4d4d4;
+            color: #fff;
         }
 
         div.options_container > label > div > span > svg {
             width: 24px;
             padding-right: 16px;
             transform: translate3d(6px, 2px, 0px);
-            fill: #d4d4d4;
+            fill: #fff;
         }
 
         div.options_container > input[type="radio"] + label > div {
@@ -90,7 +126,7 @@
         div.options_container > input[type="radio"]:checked#sms + label > div {
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            background-color: rgba(197, 131, 24, 0.75);
+            background-color: rgba(223, 137, 0, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
@@ -99,7 +135,7 @@
         div.options_container > input[type="radio"]:checked#fts + label > div {
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            background-color: rgba(103, 165, 33, 0.75);
+            background-color: rgba(64, 165, 33, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
@@ -108,7 +144,7 @@
         div.options_container > input[type="radio"]:checked#free + label > div {
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            background-color: rgba(153, 153, 153, 0.75);
+            background-color: rgba(179, 179, 179, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
@@ -124,7 +160,7 @@
         }
     </style>
 </head>
-<body>
+<body class="free">
     <div class="content">
         <div class="options_container">
             <input type="radio" id="dnd" name="status" value="Do Not Disturb">
@@ -151,7 +187,7 @@
                 </div>
             </label>
 
-            <input type="radio" id="free" name="status" value="Free">
+            <input checked type="radio" id="free" name="status" value="Free">
             <label for="free">
                 <div>
                     <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Free</title><path d="M12,3C10.89,3 10,3.89 10,5H3V19H2V21H22V19H21V5C21,3.89 20.11,3 19,3H12M12,5H19V19H12V5M5,11H7V13H5V11Z" /></svg></span>
@@ -165,6 +201,7 @@
         radioButtons.forEach(radioButton => {
             radioButton.addEventListener('change', () => {
                 // alert(radioButton.id);
+                document.body.className = document.querySelector('input[type="radio"]:checked').id;
             });
         });
     </script>
