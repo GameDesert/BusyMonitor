@@ -32,8 +32,8 @@ tvService.setCharacteristic(
 
 const dndInputService = tvAccessory.addService(
     Service.InputSource,
-    "Strict Do Not Disturb",
-    "Strict Do Not Disturb"
+    "Do Not Disturb",
+    "Do Not Disturb"
 );
 const smsInputService = tvAccessory.addService(
     Service.InputSource,
@@ -49,7 +49,7 @@ const ftsInputService = tvAccessory.addService(
 dndInputService.setCharacteristic(Characteristic.Identifier, 1);
 dndInputService.setCharacteristic(
     Characteristic.ConfiguredName,
-    "Strict Do Not Disturb"
+    "Do Not Disturb"
 );
 dndInputService.setCharacteristic(
     Characteristic.IsConfigured,
@@ -119,9 +119,9 @@ tvService
 function getInputName(identifier) {
     switch (identifier) {
         case 0:
-            return "Strict Do Not Disturb";
+            return "Do Not Disturb";
         case 1:
-            return "Strict Do Not Disturb";
+            return "Do Not Disturb";
         case 2:
             return "Reading Texts";
         case 3:
@@ -132,7 +132,7 @@ function getInputName(identifier) {
 }
 
 function change(inputName) {
-    if (inputName == "Strict Do Not Disturb") {
+    if (inputName == "Do Not Disturb") {
         dnd();
     } else if (inputName == "Reading Texts") {
         sms();
@@ -185,13 +185,13 @@ const port = 34614;
 
 app.use(express.json());
 
-app.get("/status", (req, res) => {
-    console.log("GET /status called");
+app.get("/status/api", (req, res) => {
+    console.log("GET /status/api called");
     res.send(state);
 });
 
-app.post("/status", (req, res) => {
-    console.log("POST /status called with body:", req.body, "and query:", req.query);
+app.post("/status/api", (req, res) => {
+    console.log("POST /status/api called with body:", req.body, "and query:", req.query);
     const newState = req.query.state || req.body.state || "dnd";
     state = newState;
     console.log("New state set to:", newState);
@@ -218,8 +218,12 @@ app.post("/status", (req, res) => {
     res.send(`State updated to: ${newState}`);
 });
 
+app.use(express.static("static"));
+
 app.listen(port, () => {
     console.log(`Running on http://localhost:${port}`);
 });
+
+
 
 // #endregion
